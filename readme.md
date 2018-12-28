@@ -111,18 +111,21 @@ StudyKnowledge(uint256 id) |学习知识会增加两倍的效率
 
 ## 演示视频地址： 可在线播放
 
-### 演示REST使体力值恢复
- http://www.wangjiwu.com/index.php/2018/12/29/vidio1/ ‎
- 
+ ### 区块链演示视频（有字幕版）但是不清晰 可与无字幕版验证 
+
+ http://www.wangjiwu.com/index.php/2018/12/29/vidio3/
  
 ### 区块链项目演示视频(高清无字幕版)可与有字幕版比对
 http://www.wangjiwu.com/index.php/2018/12/29/vidio2/
 
+### 演示REST使体力值恢复
+ http://www.wangjiwu.com/index.php/2018/12/29/vidio1/
+ 
 
 
-### 区块链演示视频（有字幕版）但是不清晰 可与无字幕版验证 
 
- http://www.wangjiwu.com/index.php/2018/12/29/vidio3/
+
+
 
 
 
