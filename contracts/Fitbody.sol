@@ -15,10 +15,10 @@ contract Fitbody is Ownable {
         uint legMuscle; //腿 7
         uint vitality;//体力值  10
         string name;
-        string url;
         uint256 amount;
         uint256 LaststartRestTime;
         uint increaseRatio;
+        uint state;
        
     }
     
@@ -34,19 +34,19 @@ contract Fitbody is Ownable {
     
     
     //创建健身人的私有构造函数
-    function _createMember(uint _backMuscle, uint _chestMuscle,uint _armMuscle, uint _legMuscle, uint _vitality, string memory _name, string memory _url, uint256 _amount) private {
+    function _createMember(uint _backMuscle, uint _chestMuscle,uint _armMuscle, uint _legMuscle, uint _vitality, string memory _name, uint256 _amount) private {
         //require(msg.value >= 0.001 ether);
         
-        uint256 id = members.push(member( _backMuscle,  _chestMuscle,_armMuscle, _legMuscle,  _vitality, _name, _url, _amount, now, 1)) - 1;
+        uint256 id = members.push(member( _backMuscle,  _chestMuscle,_armMuscle, _legMuscle,  _vitality, _name, _amount, now, 1, 0)) - 1;
         bodyToOwner[id] = msg.sender;
         ownerBodyCount[msg.sender] = ownerBodyCount[msg.sender] + 1;
         
     }
     
     //创建健身人
-    function creatMember(string  calldata _name, string calldata _url) payable external {
+    function creatMember(string  calldata _name) payable external {
         
-        _createMember(1,1,1,1,10, _name, _url, msg.value);
+        _createMember(1,1,1,1,10, _name, msg.value);
     }
     
 
@@ -58,10 +58,13 @@ contract Fitbody is Ownable {
     function TrainBody (uint256 id, uint choice) external  {
         
         require(msg.sender == bodyToOwner[id]);
+
+        require(members[id].state == 0);
         
         require(choice == 1 || choice == 2 || choice == 3 || choice == 4);
         
         member storage myMember = members[id];
+        
         
         if (choice == 1) {
             require(myMember.vitality >= 6);
@@ -99,23 +102,34 @@ contract Fitbody is Ownable {
         require(msg.sender == bodyToOwner[id]);
         
         member storage myMember = members[id];
-        
-        uint restHour = (now - myMember.LaststartRestTime)/3600;
-        
-     
-        myMember.vitality += restHour;
-        
-        if (myMember.vitality > 10){
-            myMember.vitality = 10;
+        //还没休息 就进入休息状态
+        if (myMember.state == 0) {
+
+            myMember.state = 1;
+        //否则表示休息完成 增加体力值
+        } else {
+            //计算经过的小时
+            uint restHour = (now - myMember.LaststartRestTime)/3600;
+            //每小时增加一个体力
+            myMember.vitality += restHour;
+            
+            if (myMember.vitality > 10){
+                myMember.vitality = 10;
+            }
+            //修改LaststartRestTime
+            myMember.LaststartRestTime = now;
+            //变成没休息的状态
+            myMember.state = 0;
+
         }
-        
-        myMember.LaststartRestTime = now;
         
     }
     
     
     //摄入充足营养会增加三倍效率
     function IncreaseNutrition(uint256 id) external {
+        require(members[id].state == 0);
+                
         require(msg.sender == bodyToOwner[id]);
         
         member storage myMember = members[id];
@@ -127,6 +141,8 @@ contract Fitbody is Ownable {
     
     //学习知识会增加两倍的效率
     function StudyKnowledge(uint256 id) external {
+        require(members[id].state == 0);
+        
         require(msg.sender == bodyToOwner[id]);
         
         member storage myMember = members[id];

@@ -64,47 +64,75 @@ window.App = { //where to close
         });
 
         $("#createMember").click(function() {
-            console.log($("#name").val())
+            if ($("#name").val() != "") {
+                App.creatMember($("#name").val())
+            } else {
+                alert("people's name can't be empty")
+            }
 
-            App.creatMember($("#name").val(), $("#url").val())
+           
             
         });
 
         $("#train").click(function() {
-            console.log($("#trainId").val())
+            //console.log($("#trainId").val())
 
-            var id = $("#trainId").val()
-            var group1 = $("[name='Fruit']").filter(":checked"); 
-            var choice = group1.attr("id")
+            if ($("#trainId").val() != "") {
+                var id = $("#trainId").val()
+                var group1 = $("[name='Fruit']").filter(":checked"); 
+                var choice = group1.attr("id")
+         
+                App.TrainBody(id, choice)
+            } else {
+                alert("Trainer's id can't be empty")
+            }
 
-            App.TrainBody(id, choice)
+         
            
            
         });
         $("#RestBody").click(function() {
-            console.log($("#activityId").val())
+            if ($("#activityId").val() != "") {
+                console.log($("#activityId").val())
 
-            var id = $("#activityId").val()
-           
-            App.RestBody(id)
+                var id = $("#activityId").val()
+               
+                App.RestBody(id)
+            } else {
+                alert("Rest people's id can't be empty")
+            }
+            
+            
             
            
         });
         $("#IncreaseNutrition").click(function() {
-            console.log($("#activityId").val())
+            if ($("#activityId").val() != "") {
 
-            var id = $("#activityId").val()
-           
-            App.IncreaseNutrition(id)
+                console.log($("#activityId").val())
+
+                var id = $("#activityId").val()
+               
+                App.IncreaseNutrition(id)
+            } else {
+                alert("People doing activity 's id can't be empty")
+            }
+
             
            
         });
         $("#StudyKnowledg").click(function() {
-            console.log($("#activityId").val())
 
-            var id = $("#activityId").val()
-           
-            App.StudyKnowledge(id)
+            if ($("#activityId").val() != "") {
+                console.log($("#activityId").val())
+
+                var id = $("#activityId").val()
+               
+                App.StudyKnowledge(id)
+            } else {
+                alert("People doing activity 's id can't be empty")
+            }
+ 
            
            
         });
@@ -136,9 +164,6 @@ window.App = { //where to close
                 console.log(err);
             });
         }
-
-
-       
     },
 
     getBodyCount : function(){
@@ -152,13 +177,13 @@ window.App = { //where to close
             console.log(err);
         });
     },
-    creatMember : function(name, url){
+    creatMember : function(name){
         //alert("creatMember")
   
         console.log(window.account_one)
 
         Fitbody.at(contract_address).then(function(instance){
-            return instance.creatMember(name, url, {from:  window.account_one, gas:1000000} );
+            return instance.creatMember(name, {from:  window.account_one, gas:1000000} );
         }).then(function(result){
             console.log(result);
             App.getAllMembersInfo()
@@ -180,21 +205,29 @@ window.App = { //where to close
             // result[4].toNumber(),result[5], result[6],
             // result[9].toNumber()
             // );
-            //console.log(result)
+            //console.log(result[8].toNumber(),result[9].toNumber())
 
             if (flag) {
                
+                var tmp = ""
+                
+                
+                if (result[9] == 0) {
+                    tmp = "Not rest Yet"
+                } else if (result[9] == 1) {
+                    tmp = "Resting"
+                }
+
                 var rowTem = '<tr id = \"t'+ num  + '\" >' + 
                 '<td>' + num + '</td>' + 
                 '<td>' + result[5] + '</td>' + 
-                '<td>' + result[6] + '</td>' + 
                 '<td>' + result[0].toNumber() + '</td>' + 
                 '<td>' + result[1].toNumber() + '</td>' + 
                 '<td>' + result[2].toNumber() + '</td>' + 
                 '<td>' + result[3].toNumber() + '</td>' + 
                 '<td>' + result[4].toNumber() + '</td>' + 
-                '<td>' + result[9].toNumber() + '</td>' +
-                '<td>' + result[10] + '</td>' +
+                '<td>' + result[8].toNumber() + '</td>' +
+                '<td>' + tmp + '</td>' +
                 '</tr>'
                 
                 
@@ -261,10 +294,11 @@ window.App = { //where to close
 
     RestBody : function(id){
         //alert("RestBody")
-        console.log( window.account_one)
+        //console.log( window.account_one)
         Fitbody.at(contract_address).then(function(instance){
             return instance.RestBody(id,  {from:  window.account_one, gas:1000000});
         }).then(function(result){
+            console.log(result)
             App.getAllMembersInfo()
             //alert("Rest success")
         }).catch(function(err){
@@ -284,7 +318,7 @@ window.App = { //where to close
             //alert("Rest success")
         }).catch(function(err){
             console.log(err);
-            alert("Rest failed")
+            alert("Study failed")
         });
     },
     IncreaseNutrition : function(id){
@@ -297,7 +331,7 @@ window.App = { //where to close
             //alert("get success")
         }).catch(function(err){
             console.log(err);
-            alert("get failed")
+            alert("Increase failed")
         });
     },
 
@@ -334,7 +368,7 @@ window.App = { //where to close
         }).then(function(result){
             console.log(result)
             App.getAllMembersInfo()
-            //alert("IncreaseNutrition success")
+            
         }).catch(function(err){
             console.log(err);
             alert("Transfer failed")
