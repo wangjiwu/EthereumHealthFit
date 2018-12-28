@@ -6,10 +6,12 @@ import fitbody_artifacts from '../../build/contracts/Fitbody.json'
 
 var accounts;
 var Fitbody = contract(fitbody_artifacts);
-var members = []
-var contract_address = "0x4dad57e0505bA0Cf46E432e7735442955f6C7B76"
-window.account_one = "0x769E101B8CCA1d8e70e66d7DF27a2706b51B5c2A"
+
+var addressdir = {}
+var contract_address = ""
+window.account_one = ""
          
+
 
 window.addEventListener('load', function() {
 
@@ -30,9 +32,9 @@ window.addEventListener('load', function() {
 });
 
 
+
 window.App = { //where to close
     
-
     start: function() {
         var self = this;
 
@@ -47,15 +49,17 @@ window.App = { //where to close
                 return;
             }
             accounts = accs;
-            //$("#tentantAddress").html(getBalance(accounts[0])); //prints balance
 
             console.log(accounts);
             
         });
         $("#login_in").click(function() {
             window.account_one = $("#address").val()
+
+            $("#currentAddress").text(window.account_one)
             console.log(window.account_one)
-            App.getAllMembersInfo()
+            App.creatContract()
+            
            
         });
 
@@ -63,7 +67,7 @@ window.App = { //where to close
             console.log($("#name").val())
 
             App.creatMember($("#name").val(), $("#url").val())
-            App.getAllMembersInfo()
+            
         });
 
         $("#train").click(function() {
@@ -73,9 +77,8 @@ window.App = { //where to close
             var group1 = $("[name='Fruit']").filter(":checked"); 
             var choice = group1.attr("id")
 
-
             App.TrainBody(id, choice)
-            App.getAllMembersInfo()
+           
            
         });
         $("#RestBody").click(function() {
@@ -84,7 +87,7 @@ window.App = { //where to close
             var id = $("#activityId").val()
            
             App.RestBody(id)
-            App.getAllMembersInfo()
+            
            
         });
         $("#IncreaseNutrition").click(function() {
@@ -93,7 +96,7 @@ window.App = { //where to close
             var id = $("#activityId").val()
            
             App.IncreaseNutrition(id)
-            App.getAllMembersInfo()
+            
            
         });
         $("#StudyKnowledg").click(function() {
@@ -102,17 +105,42 @@ window.App = { //where to close
             var id = $("#activityId").val()
            
             App.StudyKnowledge(id)
-            App.getAllMembersInfo()
+           
            
         });
+        $("#changeOwner").click(function() {
+            console.log($("#newOwner").val())
 
-
-
-
-
-
-
+            var newAddress = $("#newOwner").val()
+           
+            App.transferOwnership(newAddress)
+            
+           
+        });
     },
+
+    creatContract : function() {
+        if (addressdir[ window.account_one] != null) {
+            contract_address = addressdir[ window.account_one]
+            App.getAllMembersInfo()
+            alert("登录成功")
+
+        } else {
+            Fitbody.new({from: window.account_one, gas:3000000}).then(function(instance){
+                contract_address = instance.address
+                addressdir[window.account_one] = contract_address
+                App.getAllMembersInfo()
+                alert("创建游戏账户成功， 开始进入以太健身吧")
+            }).catch(function(err){
+                alert("创建失败")
+                console.log(err);
+            });
+        }
+
+
+       
+    },
+
     getBodyCount : function(){
        //alert("getBodyCount")
         Fitbody.at(contract_address).then(function(instance){
@@ -133,6 +161,7 @@ window.App = { //where to close
             return instance.creatMember(name, url, {from:  window.account_one, gas:1000000} );
         }).then(function(result){
             console.log(result);
+            App.getAllMembersInfo()
             //alert("create success")
         }).catch(function(err){
             console.log(err);
@@ -146,16 +175,16 @@ window.App = { //where to close
             return instance.members.call(num);
         }).then(function(result){
 
-            console.log(result[0].toNumber(), result[1].toNumber(),
-            result[2].toNumber(), result[3].toNumber(),
-            result[4].toNumber(),result[5], result[6],
-            result[9].toNumber()
-            );
+            // console.log(result[0].toNumber(), result[1].toNumber(),
+            // result[2].toNumber(), result[3].toNumber(),
+            // result[4].toNumber(),result[5], result[6],
+            // result[9].toNumber()
+            // );
+            //console.log(result)
 
             if (flag) {
-
-
-                var rowTem = '<tr>' + 
+               
+                var rowTem = '<tr id = \"t'+ num  + '\" >' + 
                 '<td>' + num + '</td>' + 
                 '<td>' + result[5] + '</td>' + 
                 '<td>' + result[6] + '</td>' + 
@@ -164,13 +193,15 @@ window.App = { //where to close
                 '<td>' + result[2].toNumber() + '</td>' + 
                 '<td>' + result[3].toNumber() + '</td>' + 
                 '<td>' + result[4].toNumber() + '</td>' + 
-                '<td>' + result[9].toNumber() + '</td>' + 
-                '</tr>';
-    
+                '<td>' + result[9].toNumber() + '</td>' +
+                '<td>' + result[10] + '</td>' +
+                '</tr>'
+                
+                
                 $(".table>tbody:last").append(rowTem);//复制tr，并且添加
+                
 
             }
-
 
             return [result[0].toNumber(), result[1].toNumber(),
             result[2].toNumber(), result[3].toNumber(),
@@ -184,15 +215,28 @@ window.App = { //where to close
         });
     },
     getAllMembersInfo : function(){
-        members = []
+        
         Fitbody.at(contract_address).then(function(instance){
            return instance.getBodyCount.call();
        }).then(function(num){
             var tmp = []
             $(".table>tbody").empty();
+            $(".table2>tbody").empty();
             for(var i = 0; i < num.toNumber(); i++) {
-                tmp =   App.getMemberInfo(i, true);
-                console.log(tmp)
+
+                App.getMemberInfo(i, true)
+                App.bodyToOwner(i, true)
+            
+                // (function(i){
+
+                //     App.getMemberInfo(i, true).then(function(){
+                //         App.bodyToOwner(i, true)
+                //     })
+                //     //nextRegister( App.getMemberInfo(i, true) ,App.bodyToOwner(i, true))
+
+                // })(i)
+
+                //console.log(tmp)
             }
         //     console.log(members);
             
@@ -207,7 +251,7 @@ window.App = { //where to close
         Fitbody.at(contract_address).then(function(instance){
             return instance.TrainBody(id, choice,  {from:  window.account_one, gas:1000000});
         }).then(function(result){
-            
+            App.getAllMembersInfo()
             //alert("Train success")
         }).catch(function(err){
             console.log(err);
@@ -217,11 +261,11 @@ window.App = { //where to close
 
     RestBody : function(id){
         //alert("RestBody")
-        
+        console.log( window.account_one)
         Fitbody.at(contract_address).then(function(instance){
             return instance.RestBody(id,  {from:  window.account_one, gas:1000000});
         }).then(function(result){
-            
+            App.getAllMembersInfo()
             //alert("Rest success")
         }).catch(function(err){
             console.log(err);
@@ -232,11 +276,11 @@ window.App = { //where to close
     StudyKnowledge : function(id){
         //alert("StudyKnowledge")
        
-        
+        console.log( window.account_one)
         Fitbody.at(contract_address).then(function(instance){
             return instance.StudyKnowledge(id,  {from:  window.account_one, gas:1000000});
         }).then(function(result){
-            
+            App.getAllMembersInfo()
             //alert("Rest success")
         }).catch(function(err){
             console.log(err);
@@ -245,11 +289,11 @@ window.App = { //where to close
     },
     IncreaseNutrition : function(id){
         //alert("StudyKnowledge")
-        
+        console.log( window.account_one)
         Fitbody.at(contract_address).then(function(instance){
             return instance.IncreaseNutrition(id,  {from: account_one, gas:1000000});
         }).then(function(result){
-            
+            App.getAllMembersInfo()
             //alert("get success")
         }).catch(function(err){
             console.log(err);
@@ -257,23 +301,47 @@ window.App = { //where to close
         });
     },
 
-    bodyToOwner : function(){
+    bodyToOwner : function(id, flag){
         //alert("StudyKnowledge")
       
         Fitbody.at(contract_address).then(function(instance){
-            return instance.bodyToOwner.call(0);
+            return instance.bodyToOwner.call(id);
         }).then(function(result){
-            console.log(result)
+
+            if (flag) {
+                
+                var rowTem = '<tr>' +
+                '<td>' + result + '</td>' +
+                '<td>' + id + '</td>' +
+                '</tr>'
+                           
+                $(".table2>tbody:last").append(rowTem);//复制tr，并且添加
+
+            }
             //alert("IncreaseNutrition success")
         }).catch(function(err){
             console.log(err);
-            alert("IncreaseNutrition failed")
+            alert(" failed")
         });
     },
 
 
-
-
+    transferOwnership : function(newAddress){
+        //alert("StudyKnowledge")
+      
+        Fitbody.at(contract_address).then(function(instance){
+            return instance.transferOwnership.call(newAddress);
+        }).then(function(result){
+            console.log(result)
+            App.getAllMembersInfo()
+            //alert("IncreaseNutrition success")
+        }).catch(function(err){
+            console.log(err);
+            alert("Transfer failed")
+        });
+    },
+  
 
 
 };//loop for main
+

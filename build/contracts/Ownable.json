@@ -1485,12 +1485,30 @@
     "1545842537500": {
       "events": {},
       "links": {},
-      "address": "0xF26d7Cef6A10ddf1cAF8a4F002825637c71769A2",
+      "address": "0x31143ADF9e2ba3cFC53B6e8979d11adfCD66Bdf2",
+      "transactionHash": "0x0f7d21ce3af9a111af4cb587270d76fb808e44d9e5f9e100e94bd4c783ec9540"
+    },
+    "1545897836138": {
+      "events": {},
+      "links": {},
+      "address": "0x8be9C67aa53145Ed7adDDC33D840fEee75eE527E",
+      "transactionHash": "0x7659c144a3ddf3895282cbc378352721bc5c566f2d2278ccac517b14b1fb7b9b"
+    },
+    "1545910203599": {
+      "events": {},
+      "links": {},
+      "address": "0x4e61AbCBD7f8Ee5F88290309a0b570f895f29ff6",
+      "transactionHash": "0x7659c144a3ddf3895282cbc378352721bc5c566f2d2278ccac517b14b1fb7b9b"
+    },
+    "1545922291314": {
+      "events": {},
+      "links": {},
+      "address": "0x7Eb543e7B688D23e0005e5ed21db05F9913312AA",
       "transactionHash": "0x7659c144a3ddf3895282cbc378352721bc5c566f2d2278ccac517b14b1fb7b9b"
     }
   },
   "schemaVersion": "3.0.0",
-  "updatedAt": "2018-12-26T16:46:02.069Z",
+  "updatedAt": "2018-12-27T14:54:34.120Z",
   "devdoc": {
     "details": "The Ownable contract has an owner address, and provides basic authorization control functions, this simplifies the implementation of \"user permissions\".",
     "methods": {

@@ -19,6 +19,7 @@ contract Fitbody is Ownable {
         uint256 amount;
         uint256 LaststartRestTime;
         uint increaseRatio;
+       
     }
     
 
@@ -39,7 +40,7 @@ contract Fitbody is Ownable {
         uint256 id = members.push(member( _backMuscle,  _chestMuscle,_armMuscle, _legMuscle,  _vitality, _name, _url, _amount, now, 1)) - 1;
         bodyToOwner[id] = msg.sender;
         ownerBodyCount[msg.sender] = ownerBodyCount[msg.sender] + 1;
-
+        
     }
     
     //创建健身人
@@ -57,6 +58,7 @@ contract Fitbody is Ownable {
     function TrainBody (uint256 id, uint choice) external  {
         
         require(msg.sender == bodyToOwner[id]);
+        
         require(choice == 1 || choice == 2 || choice == 3 || choice == 4);
         
         member storage myMember = members[id];
