@@ -1,3 +1,17 @@
+# 运行指南
+
+## 运行环境
+
+火狐浏览器， testrpc测试
+
+
+## 启动
+
+启动testrpc
+
+在目录下 npm run server
+
+
 # 1. 源码地址
 
 https://github.com/wangjiwu/EthereumHealthFit
@@ -7,8 +21,7 @@ https://github.com/wangjiwu/EthereumHealthFit
 现如今， 我们已经进入全民健身时代， "游泳健身，了解一下"已经作为一个标语，天天出现在大家的视线里。
 而现实生活， 很多人都没时间健身， 为什么不在以太坊里健身呢？ **以太健身人**就成为你的选择， 在这个游戏里
 你能通过 设置饮食，训练， 补剂， 休息， 生活习惯等方面， 把一个虚拟的小弱鸡或者一个肥仔， 变成一个
-大肌霸， 你可以看到通过你的训练计划，或者对健身人进行操作 看到你的虚拟人物各个部位的体型变化， 
-当然你也能进行账户的转让。
+大肌霸， 你可以看到通过你的训练计划，或者对健身人进行操作 看到你的虚拟人物各个部位的体型变化.
 
 
 # 3. 使用说明(应有截图与说明)
@@ -24,7 +37,7 @@ https://github.com/wangjiwu/EthereumHealthFit
  RestBody (uint256 id)|休息时体力值恢复到最大，每小时恢复一点体力值 |
 IncreaseNutrition(uint256 id)| 摄入充足营养会增加三倍效率 
 StudyKnowledge(uint256 id)| 学习知识会增加两倍的效率 
-transferOwnership(addressnewOwner)|变更所有者 
+
 
 当休息时不能进行**除 恢复休息 的其他任何操作**， 在休息状态下的**休息一小时就能恢复一点体力值， 到达体力值上限就不会增加了**
 
@@ -88,10 +101,6 @@ RestBody (uint256 id) | 休息时体力值恢复到最大，每小时恢复一�
  IncreaseNutrition(uint256 id)| 摄入充足营养会增加三倍效率 -
 StudyKnowledge(uint256 id) |学习知识会增加两倍的效率
 
-## 3.6转让此账户下的游戏用户
-
-输入新的账户地址（你要转给谁的） 点击即可
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181229003349806.png)
 
 # 4. 测试
 

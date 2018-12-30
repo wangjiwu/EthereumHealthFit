@@ -27,10 +27,22 @@ window.addEventListener('load', function() {
     }
 
     Fitbody.setProvider(web3.currentProvider);
+    console.log("读取账户和合约地址对应关系")
+    var tmp = localStorage.data
+    addressdir = JSON.parse(tmp)
     App.start();
 
 });
 
+window.onunload=function(){
+    console.log("存储账户和合约地址对应关系")
+    localStorage.data = JSON.stringify(addressdir)
+    
+    console.log(addressdir)
+
+    return "111";
+    
+}
 
 
 window.App = { //where to close
@@ -54,6 +66,7 @@ window.App = { //where to close
             
         });
         $("#login_in").click(function() {
+
             window.account_one = $("#address").val()
 
             $("#currentAddress").text(window.account_one)
@@ -148,7 +161,10 @@ window.App = { //where to close
     },
 
     creatContract : function() {
+        console.log(addressdir, addressdir[ window.account_one])
+        
         if (addressdir[ window.account_one] != null) {
+            
             contract_address = addressdir[ window.account_one]
             App.getAllMembersInfo()
             alert("登录成功")
@@ -177,6 +193,17 @@ window.App = { //where to close
             console.log(err);
         });
     },
+    getOwner : function(){
+        //alert("getBodyCount")
+         Fitbody.at(contract_address).then(function(instance){
+             return instance.owner.call();
+         }).then(function(result){
+             console.log(result);
+             
+         }).catch(function(err){
+             console.log(err);
+         });
+     },
     creatMember : function(name){
         //alert("creatMember")
   
@@ -360,21 +387,7 @@ window.App = { //where to close
     },
 
 
-    transferOwnership : function(newAddress){
-        //alert("StudyKnowledge")
-      
-        Fitbody.at(contract_address).then(function(instance){
-            return instance.transferOwnership.call(newAddress);
-        }).then(function(result){
-            console.log(result)
-            App.getAllMembersInfo()
-            
-        }).catch(function(err){
-            console.log(err);
-            alert("Transfer failed")
-        });
-    },
-  
+
 
 
 };//loop for main
